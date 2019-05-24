@@ -1,0 +1,66 @@
+
+
+    .Rating-wrap{
+        width: 100%;
+        margin-bottom: 20px;
+
+    }
+    .Rating-wrap:after, .Rating-wrap:before{
+        content: " ";
+        display: table;
+    }
+    .Rating-wrap .Rating {display: inline-block;vertical-align: middle;margin: 0px 10px; min-width: 170px;}
+    .Rating-wrapspan{ vertical-align: middle;color: #4c4e51;}
+    .Rating-wrap img{margin: 0px 5px;}
+    .Rating-target{
+        vertical-align: middle;
+        display: inline-block;
+        color: #787d80;
+    }
+
+    .layui-layer .layui-layer-title{
+        height: 60px;
+        font-size: 18px;
+        line-height: 60px;
+        text-align: center;
+        background: #025bc1;
+        color: #fff;
+        padding: 0;
+        border: 0;
+    }
+    .form textarea {
+        border: 1px solid #dae1e8;
+        background: #f7f9fb;
+        width: 100%;
+        resize: none;
+        outline: none;
+    }
+
+    .Btn {
+        cursor: pointer;
+        display: inline-block;
+        padding: 10px 15px;
+        border: 1px solid;
+        line-height: 1;
+        outline: none;
+    }
+    .Btn-white{
+        border: 1px solid #025bc1;
+    }
+    .Btn-white, .Btn-white:active, .Btn-white:hover, .Btn-white:link, .Btn-white :visited {
+        background: #fff;
+        color: #025bc1;
+    }
+    .Btn-large {
+        padding: 12px 45px;
+    }
+    .Btn-default {
+        border-color: #025bc1;
+    }
+    .Btn-default, .Btn-default:active, .Btn-default:hover, .Btn-default:link, .Btn-default :visited {
+        background: #025bc1;
+        color: #fff;
+    }
+    .text-center{
+        text-align: center;
+    }

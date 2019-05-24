@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='Rating/rating.css', _external=True) }}">
+    <script src="http://cache.edufe.cn/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='layer/layer.js', _external=True) }}"></script>
+    <script src="{{ url_for('static', filename='Rating/jquery.raty.js', _external=True) }}"></script> -->
+
+    <link rel="stylesheet" href="../static/Rating/rating.css">
+    <script src="http://cache.edufe.cn/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/layer/layer.js"></script>
+    <script src="../static/Rating/jquery.raty.js"></script>
+</head>
+<body>
+        <button id="click">click me</button>
+        <div id="test" style="display: none;">
+                <!-- <div style="width:500px;margin:0 auto;background: #fff;padding: 20px;">
+                    <form action="" class="form">
+                        <div class="form-group"><textarea name="" id="" cols="30" rows="10"></textarea></div>
+                        <div class="Rating-wrap">
+                            <span>课程内容</span>
+                            <div class="Rating Rating1" data-name="neirong" data-hint="不好,一般,好,很好,非常好"></div>
+                            <div class="Rating-target" id="neirong-target"></div>
+                        </div>
+                        <div class="Rating-wrap">
+                            <span>课程形式</span>
+                            <div class="Rating Rating2" data-name="xingshi" data-hint="不好,一般,好,很好,非常好"></div>
+                            <div class="Rating-target" id="xingshi-target"></div>
+                        </div>
+                        <div class="Rating-wrap">
+                            <span>教师评价</span>
+                            <div class="Rating Rating3" data-name="jiaoshi" data-hint="不好,一般,好,很好,非常好"></div>
+                            <div class="Rating-target" id="jiaoshi-target"></div>
+                        </div>
+                        <div class="text-center">
+                            <button class="Btn Btn-white Btn-large cancel">取消</button>
+                            <input type="submit" class="Btn Btn-large Btn-default" value="提交">
+                        </div>
+                    </form>
+                </div> -->
+            </div>
+</body>
+<script>
+    var index;
+    // window.onload = function(){
+        $("#click").on('click', () => {
+            var html = $('#test').html();
+            index = layer.open({
+                type: 1,
+                skin: 'layer-dlbx',
+                title: '呵呵',
+                closeBtn: 0,
+                anim: 2,
+                shadeClose: true,
+                area: '540px',
+                content: '                <div style="width:500px;margin:0 auto;background: #fff;padding: 20px;"> \
+                    <form action="" class="form"> \
+                        <div class="form-group"><textarea name="" id="" cols="30" rows="10"></textarea></div> \
+                        <div class="Rating-wrap"> \
+                            <span>课程内容</span>\
+                            <div class="Rating Rating1" data-name="neirong" data-hint="不好,一般,好,很好,非常好"></div>\
+                            <div class="Rating-target" id="neirong-target"></div>\
+                        </div>\
+                        <div class="Rating-wrap">\
+                            <span>课程形式</span>\
+                            <div class="Rating Rating2" data-name="xingshi" data-hint="不好,一般,好,很好,非常好"></div>\
+                            <div class="Rating-target" id="xingshi-target"></div>\
+                        </div>\
+                        <div class="Rating-wrap">\
+                            <span>教师评价</span>\
+                            <div class="Rating Rating3" data-name="jiaoshi" data-hint="不好,一般,好,很好,非常好"></div>\
+                            <div class="Rating-target" id="jiaoshi-target"></div>\
+                        </div>\
+                        <div class="text-center">\
+                            <button type="button" class="Btn Btn-white Btn-large cancel">取消</button>\
+                            <input type="submit" class="Btn Btn-large Btn-default" value="提交">\
+                        </div>\
+                    </form>\
+                </div>',
+                success: function(){
+                    var options = $(".Rating1");
+                    var opthints = options.data('hint').split(',');
+                    $(".Rating1").raty({
+                        starOff: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAACOklEQVQ4jZWRv2uTQRzGn/ve2/cuJNBGEpvKSzqpOBV0z/0BDoqboIOjunRz0qGLU4WCtAhCR/8CKW5eCDiJg0NDWimWDi2EpNBw7w/fu3NJQ1JMU5/xeZ7v53t8D5ihVqu13Wq1dmb12GWh1voeEX1jjDlr7QOl1JdpXboMxDnfrNVqQRRFgnO+qbWe2p8aaK3vM8ZWlpaWWLVaBef8BmPsyX+BtNacc/4+iiJBRGCMoV6vS8bYutZa/msmuAC4BuAugIdBENQqlcooK5fLkFKW4jje1Fp/AvBdKdU7z1mz2XzKOX/mnFtxzpWFEHGxWJxbXFycK5VKE1uNMTg+Ps4Hg0GWpmmBiPpE9MNau82azWZaqVTCarWKQqEAokvvP5JzDsYYdLtddLvdjAC87PV6WRAEV4YAABEhDEP0+/0MwCo1Go2P3vuNdrud5nl+ZZC1Fu12O3XOfWg0Gls0fOYra+3nTqeTOudmQrz32Nvby/I8/+qcWwWG36+U8tbax0mS/Dw4OPgzC3R4eJgbY35Zax8ppdwINIRl1tq1JEmyWSBjTGqtXVNKmXPv4nWXhRABZkhKKQDUx70JEBHdHJZGOjs7w+np6QRICBFwzm+PexPbiehOGIYjwNHRUWqMyQEkUspiFEVyfn4eYRiCMXZrKghAPcsy7O7upsaY3Hv/1nu/ASCP4/jF/v7+GymlWFhYkN775akg733n5OTkuvd+3Xu/oZQajMXvtNZbcRw/T5LkNWPs9/jsXwZiBzjrF1sQAAAAAElFTkSuQmCC',
+                        starOn:  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAABMElEQVQ4jaWSPy9EQRTFf/uISZRa8acRjSj4AJuobmQSjY5eQ0EiolBqNohiFVvQKSSbaKYYvoKV+AQSNJpVsXFVCm9l3ovZt8+ecu6Z3zmTuVAgFXumYptFvkoBZBG4S31ivLuJeZOCoFoQVlOxUX90oGKXgaXgaB5Yi/n/fJqKHQIegLnc6BmYNd599gSp2DFgAVgBNiPh58AVcG+8e/sFqdh1YDUFTMSqR/QCtIBmRcV+AKMlAXl1EmBrQAjATmK8uwAOB4AcGe8a3e8/AC7/AbkG9iD4NRU7AtwC1T4hLaBqvOtAsJDGuy/guESbky4kA0o1VQKUWZU8aLoEKOPtp1Gbn8XLa7IXKBy2gf00eQbYBl5jjYZzoEdgHKgDdePdezA7VbENYAPYBZ7Ci99B6Uc15jZKmwAAAABJRU5ErkJggg==',
+                        hints: opthints,
+                        scoreName : options.data('name'),
+                        target    : '#neirong-target',
+                        targetKeep: true,
+                        score: 1
+                    });                    $(".Rating2").raty({
+                        starOff: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAACOklEQVQ4jZWRv2uTQRzGn/ve2/cuJNBGEpvKSzqpOBV0z/0BDoqboIOjunRz0qGLU4WCtAhCR/8CKW5eCDiJg0NDWimWDi2EpNBw7w/fu3NJQ1JMU5/xeZ7v53t8D5ihVqu13Wq1dmb12GWh1voeEX1jjDlr7QOl1JdpXboMxDnfrNVqQRRFgnO+qbWe2p8aaK3vM8ZWlpaWWLVaBef8BmPsyX+BtNacc/4+iiJBRGCMoV6vS8bYutZa/msmuAC4BuAugIdBENQqlcooK5fLkFKW4jje1Fp/AvBdKdU7z1mz2XzKOX/mnFtxzpWFEHGxWJxbXFycK5VKE1uNMTg+Ps4Hg0GWpmmBiPpE9MNau82azWZaqVTCarWKQqEAokvvP5JzDsYYdLtddLvdjAC87PV6WRAEV4YAABEhDEP0+/0MwCo1Go2P3vuNdrud5nl+ZZC1Fu12O3XOfWg0Gls0fOYra+3nTqeTOudmQrz32Nvby/I8/+qcWwWG36+U8tbax0mS/Dw4OPgzC3R4eJgbY35Zax8ppdwINIRl1tq1JEmyWSBjTGqtXVNKmXPv4nWXhRABZkhKKQDUx70JEBHdHJZGOjs7w+np6QRICBFwzm+PexPbiehOGIYjwNHRUWqMyQEkUspiFEVyfn4eYRiCMXZrKghAPcsy7O7upsaY3Hv/1nu/ASCP4/jF/v7+GymlWFhYkN775akg733n5OTkuvd+3Xu/oZQajMXvtNZbcRw/T5LkNWPs9/jsXwZiBzjrF1sQAAAAAElFTkSuQmCC',
+                        starOn:  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAABMElEQVQ4jaWSPy9EQRTFf/uISZRa8acRjSj4AJuobmQSjY5eQ0EiolBqNohiFVvQKSSbaKYYvoKV+AQSNJpVsXFVCm9l3ovZt8+ecu6Z3zmTuVAgFXumYptFvkoBZBG4S31ivLuJeZOCoFoQVlOxUX90oGKXgaXgaB5Yi/n/fJqKHQIegLnc6BmYNd599gSp2DFgAVgBNiPh58AVcG+8e/sFqdh1YDUFTMSqR/QCtIBmRcV+AKMlAXl1EmBrQAjATmK8uwAOB4AcGe8a3e8/AC7/AbkG9iD4NRU7AtwC1T4hLaBqvOtAsJDGuy/guESbky4kA0o1VQKUWZU8aLoEKOPtp1Gbn8XLa7IXKBy2gf00eQbYBl5jjYZzoEdgHKgDdePdezA7VbENYAPYBZ7Ci99B6Uc15jZKmwAAAABJRU5ErkJggg==',
+                        hints: opthints,
+                        scoreName : options.data('name'),
+                        target    : '#xingshi-target',
+                        targetKeep: true,
+                        score: 1
+                    });                    $(".Rating3").raty({
+                        starOff: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAACOklEQVQ4jZWRv2uTQRzGn/ve2/cuJNBGEpvKSzqpOBV0z/0BDoqboIOjunRz0qGLU4WCtAhCR/8CKW5eCDiJg0NDWimWDi2EpNBw7w/fu3NJQ1JMU5/xeZ7v53t8D5ihVqu13Wq1dmb12GWh1voeEX1jjDlr7QOl1JdpXboMxDnfrNVqQRRFgnO+qbWe2p8aaK3vM8ZWlpaWWLVaBef8BmPsyX+BtNacc/4+iiJBRGCMoV6vS8bYutZa/msmuAC4BuAugIdBENQqlcooK5fLkFKW4jje1Fp/AvBdKdU7z1mz2XzKOX/mnFtxzpWFEHGxWJxbXFycK5VKE1uNMTg+Ps4Hg0GWpmmBiPpE9MNau82azWZaqVTCarWKQqEAokvvP5JzDsYYdLtddLvdjAC87PV6WRAEV4YAABEhDEP0+/0MwCo1Go2P3vuNdrud5nl+ZZC1Fu12O3XOfWg0Gls0fOYra+3nTqeTOudmQrz32Nvby/I8/+qcWwWG36+U8tbax0mS/Dw4OPgzC3R4eJgbY35Zax8ppdwINIRl1tq1JEmyWSBjTGqtXVNKmXPv4nWXhRABZkhKKQDUx70JEBHdHJZGOjs7w+np6QRICBFwzm+PexPbiehOGIYjwNHRUWqMyQEkUspiFEVyfn4eYRiCMXZrKghAPcsy7O7upsaY3Hv/1nu/ASCP4/jF/v7+GymlWFhYkN775akg733n5OTkuvd+3Xu/oZQajMXvtNZbcRw/T5LkNWPs9/jsXwZiBzjrF1sQAAAAAElFTkSuQmCC',
+                        starOn:  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAABMElEQVQ4jaWSPy9EQRTFf/uISZRa8acRjSj4AJuobmQSjY5eQ0EiolBqNohiFVvQKSSbaKYYvoKV+AQSNJpVsXFVCm9l3ovZt8+ecu6Z3zmTuVAgFXumYptFvkoBZBG4S31ivLuJeZOCoFoQVlOxUX90oGKXgaXgaB5Yi/n/fJqKHQIegLnc6BmYNd599gSp2DFgAVgBNiPh58AVcG+8e/sFqdh1YDUFTMSqR/QCtIBmRcV+AKMlAXl1EmBrQAjATmK8uwAOB4AcGe8a3e8/AC7/AbkG9iD4NRU7AtwC1T4hLaBqvOtAsJDGuy/guESbky4kA0o1VQKUWZU8aLoEKOPtp1Gbn8XLa7IXKBy2gf00eQbYBl5jjYZzoEdgHKgDdePdezA7VbENYAPYBZ7Ci99B6Uc15jZKmwAAAABJRU5ErkJggg==',
+                        hints: opthints,
+                        scoreName : options.data('name'),
+                        target    : '#jiaoshi-target',
+                        targetKeep: true,
+                        score: 1
+                    });
+
+                    $('.cancel').on('click', () => {
+                        $('textarea', '#test').each((index, ele) => {
+                            ele.value = '';
+                        });
+                        $('.Rating', '#test').each((index, ele) => {
+                            $(ele).raty('score', 1);
+                        });
+                        layer.close(index);
+                        return false;
+                    });
+                }
+            });
+        });
+
+
+</script>
+</html>
