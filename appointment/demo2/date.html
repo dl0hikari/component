@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>预约</title>
+    <link rel="stylesheet" href="css/car.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="http://cache.edufe.cn/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="car-title">
+            <span class="btn_back">
+                <img src="img/C35A9861-8C8E-4820-A8E6-E3CAD6FC87E1@3x.png" alt="">
+            </span>
+            预约页面
+            <span class="btn_ellipsis">
+                <img src="img/7AEFD701-6E55-4167-9DC7-9FCD30AEF595@3x.png" alt="">
+            </span>
+        </div>
+        <div class="myorder">
+            <form action="#">
+                <div class="myorder-row-wrapper bg-white">
+                    <div class="myorder-row">
+                        <span>联系人</span><input class="text-input" type="text" name="p" id="" placeholder="您的姓名">
+                    </div>
+                    <div class="myorder-row">
+                        <span>手机号码</span><input class="text-input" type="text" name="t" id="" placeholder="手机号码">
+                    </div>
+                </div>
+                <div class="myorder-row-wrapper bg-white">
+                    <div class="myorder-row myorder-row_s2">
+                        <span>预计到店</span><input class="text-input text-input_s2" type="text" name="d" id="" placeholder="请选择到店时间"><span class="trangle">&nbsp;</span>
+                    </div>
+                </div>
+                <div class="myhd">备注文字（选填）</div>
+                <div class="bg-white mytextarea-wrapper">
+                    <textarea class="mytextarea" name="tt" id="" placeholder="请输入100个字以内的乘凉情况描述"></textarea>
+                </div>
+                <div class="bg-white mybtn-submit-wrapper">
+                    <input class="mybtn-submit mybtn-submit_disabled" type="submit" value="提交预约">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div v-cloak id="popup" v-show="popupShow">
+        <div class="overlay"></div>
+        <div class="content">
+            <section class="srv-time-selector" v-show="switchShow">
+                <div class="bar bar-1">
+                    <h1>选择服务时间</h1>
+                    <img width="14" src="css/images/delete_weici2_icon.png"  @click="popupHide" />
+                </div>
+                <div class="bd">
+                    <div class="header">
+                        <div class="data-picker">
+                            <div class="wrapper">
+                                <button v-for="(date, index) in dates.nowMonth" :id="'scroll-' + index" :class="[{current: date.current}, {'appointment': !date.appointment}]" @click="selectedNow(index, $event)">
+                                    {{date.week}} {{date.month}}/{{date.day}}
+                                    <span>{{date.appointment ? '可预约' : '暂不可约'}}</span>
+                                </button>
+                                <button v-for="(date, index) in dates.nextMonth" :id="'scroll-next-' + index" :class="[{current: date.current}, {'appointment': !date.appointment}]" @click="selectedNext(index, $event)">
+                                    {{date.week}} {{date.month}}/{{date.day}}
+                                    <span>{{date.appointment ? '可预约' : '暂不可约'}}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="cal" @click="tableShow">
+                            <img width="16" src="css/images/rili_weici2_icon@2x.png" alt="" />
+                            <span>30天</span>
+                        </button>
+                    </div>
+                    <div :class="['no-sel', {'not-chose-time': isChoseTime}]" @click="notChoseTime" v-show="isChoseTimeShow">
+                        <p>暂不选择服务时间</p>
+                        <p>之后可以在我的订单页面选择</p>
+                    </div>
+                    <div class="hours">
+                        <div class="wrapper" v-for="date in dates.nowMonth" v-if="date.current && date.appointment">
+                            <div :class="{'chose-time': !isChoseTime}" v-if="isFirstDay === 0">
+                                <button  :class="['hour-this', {'not-can-use': (key + 20)/2 <= currentHours + 0.5}]" v-for="(hour, key) in date.hours" @click="timeChose(key, $event)">{{hour.hour}}</button>
+                            </div>
+                            <div :class="{'chose-time': !isChoseTime}" v-else>
+                                <button class="hour-this" v-for="(hour, key) in date.hours" @click="timeChose(key, $event)">{{hour.hour}}</button>
+                            </div>
+                        </div>
+                        <div class="wrapper" v-else-if="date.current && !date.appointment">
+                            <div class="tips">
+                                <img class="null-tips" src="css/images/baoqian_weici2_icon.png" alt="" />
+                                <p>抱歉，今天的服务暂时不能预约哦~</p>
+                            </div>
+                        </div>
+                        <div class="wrapper"  v-for="date in dates.nextMonth" v-if="date.current && date.appointment">
+                            <div :class="{'chose-time': !isChoseTime}">
+                                <button class="hour-this" v-for="(hour, key) in date.hours" @click="timeChose(key, $event)">{{hour.hour}}</button>
+                            </div>
+                        </div>
+                        <div class="wrapper" v-else-if="date.current && !date.appointment">
+                            <div class="tips">
+                                <img class="null-tips" src="css/images/baoqian_weici2_icon.png" alt="" />
+                                <p>抱歉，今天的服务暂时不能预约哦~</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="out">
+                        <button class="submit" @click="submitFunc">确定</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="srv-time-selector" v-show="!switchShow">
+                <div class="bar">
+                    <img width="8" src="css/images/fanhui_weici2_icon.png" @click="tableHide">
+                    <h1>选择服务时间</h1>
+                </div>
+                <div class="bd">
+                    <section class="days-component">
+                        <div class="weekdays">
+                            <div class="weekday">日</div>
+                            <div class="weekday">一</div>
+                            <div class="weekday">二</div>
+                            <div class="weekday">三</div>
+                            <div class="weekday">四</div>
+                            <div class="weekday">五</div>
+                            <div class="weekday">六</div>
+                        </div>
+                        <div class="days-body">
+                            <div>
+                                <div class="month">{{currentYears}}年{{currentMonth}}月</div>
+                                <div class="days">
+                                    <div class="day" v-for="day in nullDay">{{day}}</div>
+                                    <div class="day" v-for="(date, index) in dates.nowMonth" :id="'scroll-' + index" :class="[{current: date.current}, {'appointment': !date.appointment}]" @click="selectedNow(index, $event)">
+                                        <!-- <font v-show="index == 0">今天</font> -->
+                                        <span>{{date.appointment ? '' : '暂不可约'}}</span>
+                                        <a  :href="'#scroll-' + index">{{date.day}}</a>
+                                    </div>
+                                </div>
+                                <div class="month">{{currentMonth==12?currentYears+1:currentYears}}年{{currentMonth==12?1:currentMonth+1}}月</div>
+                                <div class="days">
+                                    <div class="day" v-for="day in nextNullDay">{{day}}</div>
+                                    <div class="day" v-for="(date, index) in dates.nextMonth" :id="'scroll-next-' + index" :class="[{current: date.current}, {'appointment': !date.appointment}]" @click="selectedNext(index, $event)">
+                                        <span>{{date.appointment ? '' : '暂不可约'}}</span>
+                                        <a  :href="'#scroll-next-' + index">{{date.day}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#popup',
+
+            data: {
+                switchShow: true,
+                currentMonth: null,
+                currentHours: null,
+                isFirstDay: 0,
+                popupShow: false,
+                isChoseTime: true,
+                isChoseTimeShow: true,
+                nextProtoWeek: null,
+                nullDay: [],
+                nextNullDay: [],
+                dates: {
+                    nowMonth: [],
+                    nextMonth: []
+                },
+
+                yytime: '' // 预约时间
+            },
+
+            methods: {
+                selectedNow: function(index, event) {
+                    for (date in this.dates.nowMonth){
+                        this.dates.nowMonth[date].current = false;
+
+                    }
+                    for (date in this.dates.nextMonth){
+                        this.dates.nextMonth[date].current = false;
+
+                    };
+
+                    if (!this.dates.nowMonth[index].appointment) {
+                        this.isChoseTimeShow = false;
+                    } else {
+                        this.isChoseTimeShow = true;
+                        this.isChoseTime = true;
+                    }
+
+                    this.isFirstDay = index;
+                    console.log("this.isFirstDay",this.isFirstDay);
+                    this.tableHide();
+                    this.dates.nowMonth[index].current = true;
+
+                },
+                selectedNext: function(index, event) {
+                    for (date in this.dates.nextMonth){
+                        this.dates.nextMonth[date].current = false;
+
+                    }
+                    for (date in this.dates.nowMonth){
+                        this.dates.nowMonth[date].current = false;
+
+                    };
+
+                    if (!this.dates.nextMonth[index].appointment) {
+                        this.isChoseTimeShow = false;
+                    } else {
+                        this.isChoseTimeShow = true;
+                        this.isChoseTime = true;
+                    }
+
+                    this.isChoseTime = true;
+                    this.tableHide();
+                    this.dates.nextMonth[index].current = true;
+                },
+
+                tableShow: function() {
+
+                    this.switchShow = false;
+
+                },
+
+                tableHide: function() {
+
+                    this.switchShow = true;
+
+                },
+
+                timeChose: function(key, event) {
+                    this.isChoseTime = false;
+                    $(event.target).siblings().removeClass('chosed');
+                    $(event.target).addClass('chosed');
+
+                },
+
+                notChoseTime: function() {
+                    this.isChoseTime = true;
+                },
+
+                popupHide: function() {
+                    app._data.popupShow = false;
+                    $(".text-input_s2").val(this.yytime);
+                },
+
+                // submit
+                submitFunc: function() {
+                    var time, choseH, subInfo;
+
+                    for (ts in this.dates.nowMonth) {
+                        if (this.dates.nowMonth[ts].current == true) {
+                            time = this.dates.nowMonth[ts];
+                        }
+                    }
+                    for (tc in this.dates.nextMonth) {
+                        if (this.dates.nextMonth[tc].current == true) {
+                            time = this.dates.nextMonth[tc];
+                        }
+                    }
+
+                    var choseHours = $('.hour-this');
+                    var noSel = $('.no-sel');
+
+                    if(noSel.hasClass('not-chose-time')) {
+                        choseH = null;
+                    } else {
+
+                        for (var h = 0; h < choseHours.length; h++) {
+                            if(choseHours.eq(h).hasClass('chosed')) {
+                                choseH = choseHours.eq(h).text();
+                            }
+                        }
+
+                    }
+
+
+                    subInfo = {
+                        "day": time,
+                        "hour": choseH
+                    }
+                    if(choseH == null){
+                        yytime = this.formartDate(subInfo.day.day, subInfo.day.month, null);
+                    }else{
+                        yytime = this.formartDate(subInfo.day.day, subInfo.day.month, subInfo.hour);
+                    }
+                    console.log("yytime", yytime);
+                    console.log("subInfo", subInfo);
+                    this.popupHide();
+                },
+
+                formartDate(day, month, time){ //格式化时间格式
+                    console.log('formartDate', day, month, time, this.currentYears);
+                    var year = this.currentYears;
+                    console.log('currentMonth', this.currentMonth);
+                    if(this.currentMonth == 12 && this.dates.nowMonth.length<30 && month==1){
+                        ++year;
+                    }
+                    if(time){
+                        return year+'-'+(month>9?month:'0'+month) + '-' + (day>9 ? day:'0'+day) + ' ' +time;
+                    }else{
+                        return year+'-'+(month>9?month:'0'+month) + '-' + (day>9 ? day:'0'+day);
+                    }
+                }
+            },
+
+            created: function() {
+                var totalDays = 30,
+                        date = new Date(),
+                        currentYears = date.getFullYear(),
+                        week = new Array('周日', '周一', '周二', '周三', '周四', '周五', '周六'),
+                        currentMonth = date.getMonth() + 1,
+                        currentDay = date.getDate(),
+                        protoWeek = date.getDay(),
+                        currentHours = date.getHours(),
+                        hours = [
+                            {'hour': '10:00'}, {'hour': '10:30'}, {'hour': '11:00'}, {'hour': '11:30'},
+                            {'hour': '12:00'}, {'hour': '12:30'}, {'hour': '13:00'}, {'hour': '13:30'},
+                            {'hour': '14:00'}, {'hour': '14:30'}, {'hour': '15:00'}, {'hour': '15:30'},
+                            {'hour': '16:00'}, {'hour': '16:30'}, {'hour': '17:00'}, {'hour': '17:30'},
+                            {'hour': '18:00'}, {'hour': '18:30'}
+                        ];
+
+                this.currentYears =	currentYears;
+                this.currentMonth =	currentMonth;
+                this.currentDay =	currentDay;
+                this.currentHours = currentHours;
+                console.log("this.currentDay", this.currentDay);
+
+                for (var i = 0; i < totalDays; i++) {
+
+                    var month = date.getMonth() + 1,
+                            day = date.getDate(),
+                            proteWeek = date.getDay(),
+                            timestamp = date.getTime(),
+                            appointment = true;
+
+                            // if(proteWeek == 0 || proteWeek == 6) { // 周日周六是否可预约 打开不可预约
+                            //     appointment = false;
+                            // }
+
+                    var	d = {
+                                'timestamp': timestamp,
+                                'appointment': appointment,
+                                'month': month,
+                                'day': day,
+                                'proteWeek': proteWeek,
+                                'week': week[proteWeek],
+                                'hours': hours,
+                                'current': false
+                            };
+
+                    if (month == currentMonth) {
+                        this.dates.nowMonth.push(d);
+                    } else {
+                        this.dates.nextMonth.push(d);
+                    }
+
+                    date.setDate(date.getDate() + 1);
+                }
+
+
+                this.dates.nowMonth[0].current = true;
+                this.nextProtoWeek = this.dates.nowMonth.length<30 ? this.dates.nextMonth[0].proteWeek: null;
+                console.log("nextProtoWeek", this.nextProtoWeek);
+                console.log("this.dates", this.dates);
+
+                for(var j = 0; j < protoWeek; j++) {
+
+                    this.nullDay.push("");
+
+                }
+
+                for(var k = 0; k < this.nextProtoWeek; k++) {
+                    this.nextNullDay.push("");
+                }
+            }
+        });
+
+        $(".text-input_s2").focus(function(){
+            app._data.popupShow=true;
+        });
+    </script>
+</body>
+</html>

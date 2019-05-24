@@ -1,0 +1,126 @@
+html, body{
+    margin: 0;
+    padding: 0;
+}
+/* .container{
+    width: 375px;
+} */
+
+img{
+    max-width: 100%;
+    border: 0;
+}
+.car-title{
+    position: relative;
+    font-family:PingFangSC-Regular;
+    font-size:4.8vw;
+    color:#142b39;
+    letter-spacing:0;
+    text-align:center;
+    margin-top: 7.73vw;
+}
+.btn_back{
+    margin-left: 2.66vw;
+    float: left;
+    width:3.2vw;
+}
+.btn_ellipsis{
+    float: right;
+    margin-right: 2.66vw;
+    right: 2.66vw;; top: 1.33vw;
+}
+.btn_ellipsis img{
+    width:4.53vw;
+    vertical-align: middle;
+}
+
+/* 预约页面 */
+.myorder{
+    margin-top: 2.66vw;
+    padding: 0 3.2vw 0 3.2vw;
+    background: #eeeeee;
+}
+.myorder-row-wrapper{
+    border: 0.5vw solid #eae8e8;
+    padding: 0 3.2vw 4.26vw 3.2vw;
+    margin-bottom: 2.66vw;
+}
+.bg-white{
+    background-color: #fff;
+}
+.myorder-row{
+    color: #333333;
+    position: relative;
+    margin-top: 4.26vw;
+}
+.myorder-row span{
+    position: absolute;
+    left: 0; top: 0;
+}
+.myorder-row_s2 span{
+    top: 1vw;
+}
+.myorder-row_s2 .trangle{
+    position: absolute;
+    right: 0; left: inherit;
+    background: url(./images/right.png) center center no-repeat;
+    background-size: 100%;
+    width: 2vw;
+}
+.myorder-row .text-input, .myorder-row{
+    font-size: 4vw; line-height: 10vw;
+}
+.myorder-row_s2{
+    position: relative;
+    font-size: 4.2vw; line-height: 6vw; margin-top: 3vw;
+}
+.myorder-row_s2 span, .myorder-row .text-input_s2{
+    font-size: 4.2vw; line-height: 8vw;
+}
+.myorder-row .text-input{
+    width: 100%;
+    padding-left: 19vw;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 0.5vw solid #fbfbfb;
+}
+.myorder-row .text-input_s2{
+    border-bottom: none;
+    border-top: 0.5vw solid #fbfbfb;
+    padding-top: 1vw;
+    color: #666;
+}
+.no-border{
+    border: none;
+}
+.mytextarea{
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    font-size: 4vw;
+    height: 30.6vw;
+}
+.myhd{
+    font-size: 4vw;
+    color: #a0a0a0;
+    margin-bottom: 2.66vw;
+}
+.mytextarea-wrapper{
+    padding: 3.2vw 3.2vw 3.2vw 3.2vw;
+    margin: 0;
+}
+.mybtn-submit{
+    width: 100%;
+    font-size: 4.2vw;
+    padding: 3.2vw;
+    border: none;
+    background-color: #43879b;
+    color: #ffffff;
+}
+.mybtn-submit_disabled{
+    background-color: #ccc;
+    color: #979797;
+}
+.mybtn-submit-wrapper{
+
+}
